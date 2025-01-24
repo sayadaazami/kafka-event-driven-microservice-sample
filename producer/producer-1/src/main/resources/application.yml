@@ -1,0 +1,30 @@
+server:
+  port: 2024
+
+spring:
+  kafka:
+    bootstrap-servers: ${SERVERS:localhost:9092,localhost:9094}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      acks: all # all,-1  👉 Wait for the full set of in-sync replicas to acknowledge the record.   0 👉 No acknowledgment  1 👉 Only the leader needs to acknowledge the record.
+#      retries: 10 # retry 10 times before failing
+#      properties:
+#        linger.ms: 0 # cache time for batch processing (0 means: send it as soon as receive it)
+#        retry.backoff.ms: 1000 # EVERY 1 SECOND which means it retries 10 times in 10 seconds
+#        request.timeout.ms: 15000 # this is the timeout for the request, if the request doesn't finish in 30 seconds, broker will return an error
+#        delivery.timeout.ms: 15000 # total time in milliseconds to complete the request; 🔴 should be equal to or larger than linger.ms + request.timeout.ms
+
+app:
+  topic:
+    name: ${TOPIC:user-topic-1}
+    partitions: 3
+    replicas: 3
+    min-replicas: 3 # how many ACKS to wait for before considering a request complete
+
+logging:
+  level:
+    ir.sayad: debug
+    org.apache.kafka: trace
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
